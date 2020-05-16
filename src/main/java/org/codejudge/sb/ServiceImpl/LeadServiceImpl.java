@@ -26,10 +26,11 @@ public class LeadServiceImpl implements LeadService {
 		  return optEmp.get();
 	}
 
-	public boolean delete(int emp) {
+	public Lead delete(int emp) {
 		// TODO Auto-generated method stub
-		 leadRepository.deleteById(emp);
-		return true;
+		 Lead employee=leadRepository.getOne(emp);
+		 leadRepository.delete(employee);
+		return employee;
 	}
 
 	public void updateLead(Lead lead,int id) {

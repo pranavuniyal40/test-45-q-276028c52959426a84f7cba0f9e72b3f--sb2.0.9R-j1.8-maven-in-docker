@@ -25,7 +25,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@RequestMapping
 @ControllerAdvice
 public class AppController extends ResponseEntityExceptionHandler  {
 	
@@ -69,39 +68,36 @@ public class AppController extends ResponseEntityExceptionHandler  {
     return ResponseEntity.ok().headers(headers).body(lead);
     }
     
-    @RequestMapping(value = "/api/leads/{leadId}", produces = "application/json", method = RequestMethod.DELETE)
-    public String delete(@PathVariable("{id}") int id) {
-		boolean isDeleted = false;
-		HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
+  //  @RequestMapping(value = "/api/leads/{leadId}", produces = "application/json", method = RequestMethod.DELETE)
+   @DeleteMapping("/api/leads/{leadId}")
+    public String deleteLead(@PathVariable(value="leadId") int id) {
+	   Lead employee=null;
 		try {
 			
-			isDeleted = leadService.delete(id);
+			employee = leadService.delete(id);
 		} catch(Exception ex) {
 			 System.out.println("Lead not found to delete" + ex.getMessage());
-			 return "not success";
+			 return "not del";
 		}
 		
-		if(isDeleted) {
-			return "Deleted successfully";
-		}
-		 return "not success";
+		return "OK Deleted";
 	}
     
     
-    @RequestMapping(value = "/api/leads/{leadId}",  produces = "application/json",method = RequestMethod.PUT)
-    public ResponseEntity<Lead> updateLead(@PathVariable("{id}") int id,@Valid @RequestBody Lead lead){
+   // @RequestMapping(value = "/api/leads/{leadId}",  produces = "application/json",method = RequestMethod.PUT)
+    @PutMapping("/api/leads/{leadId}")
+    public ResponseEntity<Lead> updateLead(@PathVariable(value="leadId") int id,@Valid @RequestBody Lead lead){
     	HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
     try {
     	leadService.updateLead(lead,id);
     } catch(Exception ex) {
 		 System.out.println("Lead not found" + ex.getMessage());
-		 return ResponseEntity.ok().headers(headers).body(lead);
+		 return ResponseEntity.ok().build();
 	}
      /*ErrorDetails errorDetails = new ErrorDetails(new Date(), "Validation Failed",
     	        ex.getBindingResult().toString());*/
-    return ResponseEntity.ok().headers(headers).body(lead);
+    return ResponseEntity.ok().build();
     }
     
     @RequestMapping(value = "/api/mark_lead/{leadId}", produces = "application/json", method = RequestMethod.PUT)
